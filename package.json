@@ -1,5 +1,5 @@
 {
-  "name": "csgo-cdn",
+  "name": "node-csgo-cdn",
   "version": "1.1.1",
   "description": "Retrieves the Steam CDN URLs for CS:GO Item Images",
   "main": "index.js",
@@ -22,13 +22,19 @@
     "vpk": "0.2.0",
     "winston": "^3.0.0-rc1"
   },
-  "author": {
-    "name": "Stepan Fedorko-Bartos",
-    "email": "Step7750@gmail.com",
-    "url": "http://stepan.me"
-  },
+  "contributors": [
+    {
+      "name": "Stepan Fedorko-Bartos",
+      "email": "Step7750@gmail.com",
+      "url": "http://stepan.me"
+    },
+    {
+      "name": "ilzrv",
+      "email": "dvpusha@gmail.com"
+    }
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Step7750/node-csgo-cdn.git"
+    "url": "https://github.com/dvpusha/node-csgo-cdn.git"
   }
 }
