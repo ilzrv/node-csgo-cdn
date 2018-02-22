@@ -5,6 +5,7 @@ const vpk = require('vpk');
 const vdf = require('simple-vdf');
 const hasha = require('hasha');
 const winston = require('winston');
+const helpers = require('./helpers');
 
 const defaultConfig = {
     directory: 'data',
@@ -821,6 +822,45 @@ class CSGOCdn extends EventEmitter {
                 }
             }
         }
+    }
+
+    /**
+     * 
+     * @returns {Array}
+     */
+    getStickersPack() {
+        const pack = [];
+        const kits = this.itemsGame.sticker_kits;
+
+        this.vpkFiles.forEach((path) => {
+            let sticker = path.match(/stickers\/(.*?)\/(.*?[^_large])\.png/i);
+
+            if (!sticker || typeof sticker[1] === 'undefined' || typeof sticker[2] === 'undefined') {
+                return;
+            }
+
+            let file = this.vpkDir.getFile(path);
+            let file_large = this.vpkDir.getFile(path.substr(0, path.indexOf('.png')) + '_large.png');
+
+            let sha1 = hasha(file, {
+                'algorithm': 'sha1'
+            });
+
+            let sha1_large = hasha(file_large, {
+                'algorithm': 'sha1'
+            });
+
+            let sticker_material = `${sticker[1]}/${sticker[2]}`;
+
+            pack.push({
+                id: helpers.findProp(kits, (el, prop) => el.sticker_material === sticker_material),
+                material: sticker_material,
+                hash: sha1,
+                hash_large: sha1_large
+            });
+        });
+
+        return pack;
     }
 }
 
