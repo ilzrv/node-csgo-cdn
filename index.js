@@ -16,7 +16,8 @@ const defaultConfig = {
     cases: true,
     tools: true,
     statusIcons: true,
-    logLevel: 'info'
+    logLevel: 'info',
+    customLangFile: 'csgo_russian.txt'
 };
 
 const wears = ['Factory New', 'Minimal Wear', 'Field-Tested', 'Well-Worn', 'Battle-Scarred'];
@@ -187,10 +188,11 @@ class CSGOCdn extends EventEmitter {
         const itemsGameFile = manifest.files.find((file) => file.filename.endsWith("items_game.txt"));
         const itemsGameCDNFile = manifest.files.find((file) => file.filename.endsWith("items_game_cdn.txt"));
         const csgoEnglishFile = manifest.files.find((file) => file.filename.endsWith("csgo_english.txt"));
+        const csgoCustomLangFile = manifest.files.find((file) => file.filename.endsWith(this.config.customLangFile));
 
         this.log.debug(`Downloading required static files`);
 
-        await this.downloadFiles([dirFile, itemsGameFile, itemsGameCDNFile, csgoEnglishFile]);
+        await this.downloadFiles([dirFile, itemsGameFile, itemsGameCDNFile, csgoEnglishFile, csgoCustomLangFile]);
 
         this.log.debug('Loading static file resources');
 
@@ -205,6 +207,7 @@ class CSGOCdn extends EventEmitter {
     loadResources() {
         this.itemsGame = vdf.parse(fs.readFileSync(`${this.config.directory}/items_game.txt`, 'utf8'))['items_game'];
         this.csgoEnglish = vdf.parse(fs.readFileSync(`${this.config.directory}/csgo_english.txt`, 'ucs2'))['lang']['Tokens'];
+        this.csgoCustomLang = vdf.parse(fs.readFileSync(`${this.config.directory}/${this.config.customLangFile}`, 'ucs2'))['lang']['Tokens'];
         this.itemsGameCDN = this.parseItemsCDN(fs.readFileSync(`${this.config.directory}/items_game_cdn.txt`, 'utf8'));
 
         this.weaponNameMap = Object.keys(this.csgoEnglish).filter(n => n.startsWith("SFUI_WPNHUD"));
@@ -852,15 +855,29 @@ class CSGOCdn extends EventEmitter {
 
             let sticker_material = `${sticker[1]}/${sticker[2]}`;
 
+            let defindex = helpers.findProp(kits, (el, prop) => el.sticker_material === sticker_material);
+
             pack.push({
-                id: helpers.findProp(kits, (el, prop) => el.sticker_material === sticker_material),
+                defindex: defindex,
                 material: sticker_material,
                 hash: sha1,
-                hash_large: sha1_large
+                hash_large: sha1_large,
+                name: this.getStickerName(defindex),
             });
         });
 
         return pack;
+    }
+
+    /**
+     *
+     * @param defindex
+     * @returns {*}
+     */
+    getStickerName(defindex) {
+        const name = this.itemsGame.sticker_kits[defindex].item_name.slice(1);
+
+        return this.csgoCustomLang[name];
     }
 }
 
