@@ -5,7 +5,6 @@ const vpk = require('vpk');
 const vdf = require('simple-vdf');
 const hasha = require('hasha');
 const winston = require('winston');
-const helpers = require('./helpers');
 
 const defaultConfig = {
     directory: 'data',
@@ -835,37 +834,26 @@ class CSGOCdn extends EventEmitter {
         const pack = [];
         const kits = this.itemsGame.sticker_kits;
 
-        this.vpkFiles.forEach((path) => {
-            let sticker = path.match(/stickers\/(.*?)\/(.*?[^_large])\.png/i);
+        for (let defindex in kits)
+        {
+            if (!kits.hasOwnProperty(defindex)) continue;
 
-            if (!sticker || typeof sticker[1] === 'undefined' || typeof sticker[2] === 'undefined') {
-                return;
-            }
+            const sticker_material = kits[defindex].sticker_material;
 
-            let file = this.vpkDir.getFile(path);
-            let file_large = this.vpkDir.getFile(path.substr(0, path.indexOf('.png')) + '_large.png');
+            if (!sticker_material) continue;
 
-            let sha1 = hasha(file, {
-                'algorithm': 'sha1'
-            });
-
-            let sha1_large = hasha(file_large, {
-                'algorithm': 'sha1'
-            });
-
-            let sticker_material = `${sticker[1]}/${sticker[2]}`;
-
-            let defindex = helpers.findProp(kits, (el, prop) => el.sticker_material === sticker_material);
+            const hashes = this.getStickerHashes(sticker_material);
+            const names = this.getStickerNames(defindex);
 
             pack.push({
                 defindex: defindex,
                 material: sticker_material,
-                hash: sha1,
-                hash_large: sha1_large,
-                name: this.getStickerName(defindex),
+                hash: hashes[0],
+                hash_large: hashes[1],
+                custom_name: names.custom,
+                english_name: names.english
             });
-        });
-
+        }
         return pack;
     }
 
@@ -874,10 +862,31 @@ class CSGOCdn extends EventEmitter {
      * @param defindex
      * @returns {*}
      */
-    getStickerName(defindex) {
+    getStickerNames(defindex) {
         const name = this.itemsGame.sticker_kits[defindex].item_name.slice(1);
 
-        return this.csgoCustomLang[name];
+        return {
+            custom: this.csgoCustomLang[name],
+            english: this.csgoCustomLang[`[english]${name}`],
+        };
+    }
+
+    /**
+     *
+     * @param material
+     * @returns []
+     */
+    getStickerHashes(material) {
+        const names = [`${material}.png`, `${material}_large.png`];
+
+        return names.map((name) => {
+            let path = this.vpkFiles.find((t) => t.endsWith(name));
+            let file = this.vpkDir.getFile(path);
+
+            return hasha(file, {
+                'algorithm': 'sha1'
+            });
+        });
     }
 }
 
