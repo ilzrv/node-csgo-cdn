@@ -867,7 +867,7 @@ class CSGOCdn extends EventEmitter {
 
         return {
             custom: this.csgoCustomLang[name],
-            english: this.csgoCustomLang[`[english]${name}`],
+            english: this.csgoEnglish[name],
         };
     }
 
