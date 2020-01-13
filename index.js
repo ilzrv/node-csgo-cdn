@@ -844,8 +844,7 @@ class CSGOCdn extends EventEmitter {
         const pack = [];
         const kits = this.itemsGame.sticker_kits;
 
-        for (let defindex in kits)
-        {
+        for (let defindex in kits) {
             if (!kits.hasOwnProperty(defindex)) continue;
 
             const sticker_material = kits[defindex].sticker_material;
@@ -855,14 +854,16 @@ class CSGOCdn extends EventEmitter {
             const hashes = this.getStickerHashes(sticker_material);
             const names = this.getStickerNames(defindex);
 
-            pack.push({
-                defindex: defindex,
-                material: sticker_material,
-                hash: hashes[0],
-                hash_large: hashes[1],
-                custom_name: names.custom,
-                english_name: names.english
-            });
+            if (hashes.hasOwnProperty(0) && hashes.hasOwnProperty(1)) {
+                pack.push({
+                    defindex: defindex,
+                    material: sticker_material,
+                    hash: hashes[0],
+                    hash_large: hashes[1],
+                    custom_name: names.custom,
+                    english_name: names.english
+                });
+            }
         }
         return pack;
     }
@@ -889,7 +890,15 @@ class CSGOCdn extends EventEmitter {
     getStickerHashes(material) {
         const names = [`${material}.png`, `${material}_large.png`];
 
-        return names.map((name) => {
+        return names.filter((name) => {
+            let path = this.vpkFiles.find((t) => t.endsWith(name));
+
+            if (!path) {
+                return false;
+            }
+
+            return !!this.vpkDir.getFile(path);
+        }).map((name) => {
             let path = this.vpkFiles.find((t) => t.endsWith(name));
             let file = this.vpkDir.getFile(path);
 
