@@ -18,7 +18,7 @@
     "hasha": "^3.0.0",
     "simple-vdf": "^1.1.0",
     "steam-totp": "^2.0.1",
-    "steam-user": "^3.25.1",
+    "steam-user": "^4.12.3",
     "vpk": "0.2.0",
     "winston": "^3.0.0-rc1"
   },
@@ -29,12 +29,12 @@
       "url": "http://stepan.me"
     },
     {
-      "name": "ilzrv",
-      "email": "dvpusha@gmail.com"
+      "name": "Ilia Lazarev",
+      "email": "ilia.lazarev@icloud.com"
     }
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/dvpusha/node-csgo-cdn.git"
+    "url": "https://github.com/ilzrv/node-csgo-cdn.git"
   }
 }

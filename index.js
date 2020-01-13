@@ -40,7 +40,7 @@ class CSGOCdn extends EventEmitter {
     }
 
     get steamReady() {
-        return this.user.client.connected;
+        return !!this.user.steamID;
     }
 
     get phase() {
@@ -153,7 +153,7 @@ class CSGOCdn extends EventEmitter {
     getLatestManifestId() {
         this.log.debug('Obtaining latest manifest ID');
         return this.getProductInfo().then(([apps, packages, unknownApps, unknownPackages]) => {
-            const csgo = apps['730'].appinfo;
+            const csgo = packages['730'].appinfo;
             const commonDepot = csgo.depots['731'];
 
             return commonDepot.manifests.public;
@@ -289,7 +289,7 @@ class CSGOCdn extends EventEmitter {
                 continue;
             }
 
-            const promise = this.user.downloadFileAsync(730, 731, file, `${this.config.directory}/${name}`);
+            const promise = this.user.downloadFile(730, 731, file, `${this.config.directory}/${name}`);
             promises.push(promise);
         }
 
@@ -368,17 +368,11 @@ class CSGOCdn extends EventEmitter {
 
             this.log.info(`${status} Downloading ${fileName} - ${bytesToMB(file.size)} MB`);
 
-            const promise = new Promise((resolve, reject) => {
-                const ee = this.user.downloadFile(730, 731, file, filePath, () => {
-                    resolve();
-                });
-
-                ee.on('progress', (bytesDownloaded, totalSize) => {
-                    this.log.info(`${status} ${(bytesDownloaded*100/totalSize).toFixed(2)}% - ${bytesToMB(bytesDownloaded)}/${bytesToMB(totalSize)} MB`);
-                });
+            await this.user.downloadFile(730, 731, file, filePath, (none, { type, bytesDownloaded, totalSizeBytes }) => {
+                if (type === 'progress') {
+                    this.log.info(`${status} ${(bytesDownloaded*100/totalSizeBytes).toFixed(2)}% - ${bytesToMB(bytesDownloaded)}/${bytesToMB(totalSizeBytes)} MB`);
+                }
             });
-
-            await promise;
 
             this.log.info(`${status} Downloaded ${fileName}`);
         }
@@ -465,7 +459,7 @@ class CSGOCdn extends EventEmitter {
         let skinName = '';
 
         if (paintindex in paintKits) {
-            skinName = paintKits[iteminfo.paintindex].name;
+            skinName = paintKits[paintindex].name;
 
             if (skinName === 'default') {
                 skinName = '';
@@ -478,7 +472,7 @@ class CSGOCdn extends EventEmitter {
         const items = this.itemsGame.items;
 
         if (defindex in items) {
-            weaponName = items[iteminfo.defindex].name;
+            weaponName = items[defindex].name;
         }
 
         // Get the image url
@@ -488,7 +482,8 @@ class CSGOCdn extends EventEmitter {
     }
 
     /**
-     * Returns whether the given name is a weapon by checking for condition
+     * Returns whether the given name is a weapon by checking
+     * the prefab and whether it is used by one of the sides
      * @param marketHashName Item name
      * @return {boolean} Whether a weapon
      */
@@ -595,20 +590,35 @@ class CSGOCdn extends EventEmitter {
 
             const stickerKits = this.itemsGame.sticker_kits;
 
-            const kitIndex = Object.keys(stickerKits).find((n) => {
+            const kitIndices = Object.keys(stickerKits).filter((n) => {
                 const k = stickerKits[n];
 
                 return k.item_name === stickerTag;
             });
 
-            const kit = stickerKits[kitIndex];
+            // prefer kit indices with "graffiti" in the name
+            kitIndices.sort((a, b) => {
+                const index1 = !!stickerKits[a].name && stickerKits[a].name.indexOf('graffiti');
+                const index2 = !!stickerKits[b].name && stickerKits[b].name.indexOf('graffiti');
+                if (index1 === index2) {
+                    return 0
+                } else if (index1 > -1) {
+                    return -1
+                } else {
+                    return 1
+                }
+            });
 
-            if (!kit || !kit.sticker_material) continue;
+            for (const kitIndex of kitIndices) {
+                const kit = stickerKits[kitIndex];
 
-            const url = this.getStickerURL(kit.sticker_material, true);
+                if (!kit || !kit.sticker_material) continue;
 
-            if (url) {
-                return url;
+                const url = this.getStickerURL(kit.sticker_material, true);
+
+                if (url) {
+                    return url;
+                }
             }
         }
     }
