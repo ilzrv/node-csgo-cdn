@@ -13,21 +13,21 @@ Can retrieve CDN images for:
 
 
 ## Table of Contents
-  * [Why?](https://github.com/Step7750/node-csgo-cdn#why)
-  * [How?](https://github.com/Step7750/node-csgo-cdn#how)
+  * [Why?](#why)
+  * [How?](#how)
   * [How to Install](#how-to-install)
-  * [Methods](https://github.com/Step7750/node-csgo-cdn#methods)
-    * [Constructor(client, options)](https://github.com/Step7750/node-csgo-cdn#constructorclient-options)
-    * [getItemNameURL(marketHashName, phase)](https://github.com/Step7750/node-csgo-cdn#getitemnameurlmarkethashname-phase)
-    * [getStickerURL(stickerName, large=true)](https://github.com/Step7750/node-csgo-cdn#getstickerurlstickername-largetrue)
-    * [getWeaponURL(defindex, paintindex)](https://github.com/Step7750/node-csgo-cdn#getweaponurldefindex-paintindex)
-  * [Properties](https://github.com/Step7750/node-csgo-cdn#properties)
-    * [itemsGame](https://github.com/Step7750/node-csgo-cdn#itemsgame)
-    * [csgoEnglish](https://github.com/Step7750/node-csgo-cdn#csgoenglish)
-    * [itemsGameCDN](https://github.com/Step7750/node-csgo-cdn#itemsgamecdn)
-    * [phase](https://github.com/Step7750/node-csgo-cdn#phase)
-  * [Events](https://github.com/Step7750/node-csgo-cdn#events)
-    * [ready](https://github.com/Step7750/node-csgo-cdn#ready)
+  * [Methods](#methods)
+    * [Constructor(client, options)](#constructorclient-options)
+    * [getItemNameURL(marketHashName, phase)](#getitemnameurlmarkethashname-phase)
+    * [getStickerURL(stickerName, large=true)](#getstickerurlstickername-largetrue)
+    * [getWeaponURL(defindex, paintindex)](#getweaponurldefindex-paintindex)
+  * [Properties](#properties)
+    * [itemsGame](#itemsgame)
+    * [csgoEnglish](#csgoenglish)
+    * [itemsGameCDN](#itemsgamecdn)
+    * [phase](#phase)
+  * [Events](#events)
+    * [ready](#ready)
     
 
 ## Why?
