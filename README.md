@@ -15,7 +15,7 @@ Can retrieve CDN images for:
 ## Table of Contents
   * [Why?](https://github.com/Step7750/node-csgo-cdn#why)
   * [How?](https://github.com/Step7750/node-csgo-cdn#how)
-  * [How to Install](https://github.com/Step7750/node-csgo-cdn#how-to-install)
+  * [How to Install](#how-to-install)
   * [Methods](https://github.com/Step7750/node-csgo-cdn#methods)
     * [Constructor(client, options)](https://github.com/Step7750/node-csgo-cdn#constructorclient-options)
     * [getItemNameURL(marketHashName, phase)](https://github.com/Step7750/node-csgo-cdn#getitemnameurlmarkethashname-phase)
@@ -61,12 +61,12 @@ Example URL: https://steamcdn-a.akamaihd.net/apps/730/icons/econ/stickers/cologn
 
 ## How to Install
 
-### `npm install csgo-cdn`
+### `npm install node-csgo-cdn`
 
 #### See example.js
 ```javascript
 const SteamUser = require('steam-user');
-const csgoCDN = require('csgo-cdn');
+const csgoCDN = require('node-csgo-cdn');
 
 const user = new SteamUser();
 const cdn = new csgoCDN(user, {logLevel: 'debug'});
@@ -150,4 +150,4 @@ cdn.getItemNameURL('★ Flip Knife | Doppler (Minimal Wear)', cdn.phase.sapphire
 
 ### ready
 
-Emitted when csgo-cdn is ready, this must be emitted before using the object
+Emitted when node-csgo-cdn is ready, this must be emitted before using the object
