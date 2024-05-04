@@ -14,7 +14,7 @@ declare module "csgo-cdn" {
       [key:string]: Array<string>
     }
   }
-  
+
   export enum CsgoCdnLogLevel {
     Error = 'error',
     Warn = 'warn',
@@ -23,7 +23,7 @@ declare module "csgo-cdn" {
     Debug = 'debug',
     Silly = 'silly'
   }
-  
+
   export enum CsgoCdnSkinPhases {
     Ruby = 'am_ruby_marbleized',
     Sapphire = 'am_sapphire_marbleized',

@@ -17,8 +17,8 @@
     "bluebird": "^3.5.1",
     "hasha": "^3.0.0",
     "simple-vdf": "^1.1.0",
-    "steam-totp": "^2.0.1",
-    "steam-user": "^4.28.8",
+    "steam-totp": "^2.1.2",
+    "steam-user": "^5.0.9",
     "vpk": "0.2.0",
     "winston": "^3.0.0-rc1"
   },
@@ -30,7 +30,7 @@
     },
     {
       "name": "Ilia Lazarev",
-      "email": "ilia.lazarev@icloud.com"
+      "email": "me@ilzrv.com"
     }
   ],
   "repository": {
